@@ -1,0 +1,117 @@
+{% load static %}
+
+<style> 
+  span {
+    font-size: .9rem;
+  }
+
+.nav-item{
+    margin-left: .3rem;
+    font-size: 1rem;
+  }
+
+  .nav{
+    border-top: 1px solid rgb(229, 229, 229);
+  }
+</style>
+
+    <div class="position-sticky pt-3">
+
+      <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span> <i class="fa-solid fa-book"></i> GENERAL </span>
+        <a class="link-secondary" href="#" aria-label="Add a new report">
+          <span data-feather="plus-circle"></span>
+        </a>
+      </h5>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url "expenses" %}">
+            <span data-feather="home"></span>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url "expenses" %}">
+            <span data-feather="file"></span>
+            Expenses
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url "income" %}">
+            <span data-feather="income"></span>
+            Income
+          </a>
+        </li>
+        
+      </ul>
+
+      <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span> <i class="fa-solid fa-receipt"></i>   SUMMARY</span>
+        <a class="link-secondary" href="#" aria-label="Add a new report">
+          <span data-feather="plus-circle"></span>
+        </a>
+      </h5>
+      <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'expense-summary' %}">
+            <span data-feather="file-text"></span>
+            Expenses Summary
+          </a>
+        </li>
+
+      </ul>
+      
+      <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span> <i class="fa-solid fa-gear"></i> SETTINGS</span>
+        <a class="link-secondary" href="#" aria-label="Add a new report">
+          <span data-feather="plus-circle"></span>
+        </a>
+      </h5>
+      <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="{% url 'user_preferences' %}">
+          <span data-feather="home"></span>
+          General
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <span data-feather="file"></span>
+          Account
+        </a>
+      </li>
+    </ul>
+
+    <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span> <i class="fa-solid fa-file-export"></i>  EXPORT </span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h5>
+    <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="{% url 'export-csv' %}">
+        <span data-feather="home"></span>
+        CSV (Expenses)
+      </a>
+    </li>
+  </ul>
+
+    </div>
+
+
+    <div class="log  py-3" style="width: 15rem; position:fixed; display: block; bottom: 0rem; background-color: rgb(228, 232, 236);">
+      
+      {% if user.is_authenticated %}
+      <form  class = "nav-link px-3" action = "{% url "logout" %}" method = "post">
+        <span  >Welcome,</span>  <strong style = "margin-right:5px;"> {{request.user.username}} </strong>
+        {% csrf_token %}
+        <br>
+        <button  class = "btn btn-primary mt-2" type = "submit"> Logout </button>
+        
+      </form>
+      {% else %}
+        <a class="nav-link px-3" href={% url "login"%}>Login</a>
+        
+      {% endif %}
+    </div>

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<div class = "container mt-2">
+    <div class="row">
+
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-light">
+                    
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-2">
+            <a class="btn btn-primary btn-sm" href="{% url 'add-expense' %}"> <i class="fa-solid fa-circle-plus"></i> Add Expanse</a>
+        </div>
+    </div>
+
+    {% include 'partials/_messages.html' %}
+
+    <div class="row d-flex" style="justify-content: space-between; align-items: center;">
+        <div class="col-md-8 " > <h4  class="pt-3" >Your Expenses </h4> </div>
+        <div class="col-md-4">
+            <div class="form-group">'
+                <input type="text" class="form-control my-0 " placeholder="Search" id="searchField" name="searchText">
+            </div>
+        </div>
+    </div>
+    
+    <hr>
+
+
+    <div class="container" style="overflow-x:scroll;">
+        <div class="app-table">
+            {% if expenses.count %}
+            <table class="table table-striped table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Amount ({{currency}})</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col" class = "float-right d-flex" style = "justify-content: center;">Action</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    {% for expense in page_obj %}
+                    <tr>
+                        <td>{{expense.amount}}</td>
+                        <td>{{expense.category}}</td>
+                        <td>{{expense.description}}</td>
+                        <td>{{expense.date}}</td>
+                        <td>
+                            <div class = "float-right d-flex" style = "justify-content: center;" >
+                                <a href = "{% url 'edit-expense' expense.id %}" class = 'btn btn-secondary btn-sm mx-2' >Edit</a>
+                                <a href = "{% url 'delete-expense' expense.id %}" class = 'btn btn-danger btn-sm' >Delete</a>
+                            </div>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+    
+        </div>
+                
+        <div class="search-results">
+            <table class="table table-striped table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Amount (Currency)</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col" class = "float-right d-flex" style = "justify-content: center;">Action</th>
+                        </tr>
+                    </thead>
+                <tbody class="search-results-body">
+                
+                </tbody>
+            </table>
+            
+
+        </div>
+
+
+        <div class = "pagination-container" style = "justify-content:space-between;" id = "pagination" >
+            <div>
+                Showing page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+
+            </div>
+
+            <div >
+                <nav aria-label="Page navigation example">
+                        {% if page_obj.has_previous %}
+                          <a class="btn btn-outline-info btn-sm" href="?page=1">First</a>
+                          <a class="btn btn-outline-info btn-sm" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        {% endif %}
+                  
+                        {% for num in page_obj.paginator.page_range %}
+                          {% if page_obj.number == num %}
+                            <a class="btn btn-info btn-sm" href="?page={{ num }}">{{ num }}</a>
+                          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a class="btn btn-outline-info btn-sm" href="?page={{ num }}">{{ num }}</a>
+                          {% endif %}
+                        {% endfor %}
+                  
+                        {% if page_obj.has_next %}
+                          <a class="btn btn-outline-info btn-sm" href="?page={{ page_obj.next_page_number }}">Next</a>
+                          <a class="btn btn-outline-info btn-sm" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        {% endif %}
+                  </nav>
+            </div>
+        </div>
+
+        {% else %}
+        <div class = 'd-flex justify-content-center align-items-center' style = "height:10vh;"> 
+            <div class = "text-center"> 
+                <h3>You Don't have Expenses </h3>
+                <h6> Click <strong> <a href = "{% url 'add-expense' %}" style = "font-size:1rem;" > <i class="fa-solid fa-circle-plus"></i> Add Expense</a></strong> to add new</h6>
+                
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+    <div class="row home-graph">
+        <h5 class="mt-2">Summary</h5>
+        <hr  class="mt-0">
+        <div class="col-md-5">
+            <h5 class="text-center">Total Spent : <span class="totalAmt"></span></h5>
+            <canvas visible id="myChart" width="100" height="100"></canvas>
+        </div>
+    
+    <div class="col-md-1">
+        
+    </div>
+    <div class="col-md-5">
+            <h5 class="text-center">Recent Spents</h5>
+            <canvas visible id="myChart2" width="400" height="400"></canvas>
+    </div>
+    </div>
+</div>  
+
+{% comment %} <input type="hidden" id="myVar" name="variable" value="{{ currency }}" hidden>  {% endcomment %}
+{{ currency|json_script:"myVar" }}
+
+
+
+
+
+<script>
+    {% comment %} console.log("{{currency}}") {% endcomment %}
+</script>
+<script src="{% static 'js/searchExpenses.js' %}"></script>
+<script src="{% static 'js/expenses.js' %}"> </script>
+{% comment %} <script src="{% static 'js/chartjs.min.js' %}"> </script> {% endcomment %}
+
+
+{% endblock content %}
