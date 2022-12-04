@@ -146,7 +146,6 @@
         
         if(searchVal.trim().length>0) {
             // console.log(searchVal);
-            results = '';
             fetch("/income/search-income/", {
                 body:JSON.stringify({searchText:searchVal}),
                 method :"POST",
@@ -159,7 +158,8 @@
                 }
                 else {
                     searchResults.style.display = "block";
-                    
+                    results = '';
+
     
                     
                     data.forEach(item => {
