@@ -2,30 +2,80 @@
 {% load static %}
 {% block content %}
 
-            <div class="card w-50 mx-auto" style="min-width: 20rem;">
-                <div class="card-body">
-                    <h2> Register Here </h2>
-                    
-                    {% include 'partials/_messages.html' %}
-                    
-                    <form class="" action="{%url "register" %}" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <input type="text"  name="username" id="usernameField" class="form-control my-3" placeholder="Username"  />
-                        </div>
-                        <div class="invalid-feedback" style="display: none;"></div>
-                        <p class="text-sm text-success usernameSuccessOutput"></p>
-                        <div class="form-group">
-                            <input type="email" name="email" id="emailField" class="form-control my-3" placeholder="Email" />
-                        </div>
-                        <div class="form-group">
-                            <input type="password" name="password" id="passwordField" class=" form-control mt-3 mb-1"placeholder="Password" />
-                            <small class="passwordToggle bg-secondary text-light px-2 py-1 rounded my-0" style="float: right; cursor: pointer;">Show</small>
-                        </div>
-                        <input type="submit" name="" id="" class="btn btn-primary register form-control my-3" placeholder="" value="Register">
-                        Already Have an account? <a href = {% url 'login'%}> Log In</a>
-                    </form>
-                </div>
+<div class="card w-50 mx-auto" style="min-width: 20rem;">
+    <div class="card-body">
+        <h2> Register Here </h2>
+
+        {% include 'partials/_messages.html' %}
+
+        <form class="" action="{%url " register" %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="username" id="usernameField" class="form-control my-3"
+                    placeholder="Username" />
             </div>
-<script src="{% static 'authentication/js/register.js' %}"></script>
+            <div class="invalid-feedback" style="display: none;"></div>
+            <p class="text-sm text-success usernameSuccessOutput"></p>
+            <div class="form-group">
+                <input type="email" name="email" id="emailField" class="form-control my-3" placeholder="Email" />
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" id="passwordField" class=" form-control mt-3 mb-1"
+                    placeholder="Password" />
+                <small class="passwordToggle bg-secondary text-light px-2 py-1 rounded my-0"
+                    style="float: right; cursor: pointer;">Show</small>
+            </div>
+            <input type="submit" name="" id="" class="btn btn-primary register form-control my-3" placeholder=""
+                value="Register">
+            Already Have an account? <a href={% url 'login' %}> Log In</a>
+        </form>
+    </div>
+</div>
+<script>
+    console.log("register javascript")
+
+    const usernameField = document.getElementById("usernameField");
+    const feedbackArea = document.getElementsByClassName("invalid-feedback")[0];
+    const usernameSuccessOutput = document.getElementsByClassName("usernameSuccessOutput")[0];
+    const passwordToggle = document.getElementsByClassName("passwordToggle")[0];
+    const passwordField = document.getElementById("passwordField");
+
+    // togle SharedWorker/hide password
+    passwordToggle.addEventListener('click', () => {
+        if (passwordToggle.textContent === "Show") {
+            passwordToggle.textContent = "Hide";
+            passwordField.setAttribute('type', "text")
+        }
+        else {
+            passwordToggle.textContent = "Show";
+            passwordField.setAttribute('type', "password")
+        }
+    })
+
+    // Checking whether username is valid or not.
+    usernameField.addEventListener('keyup', (e) => {
+        let usernameVal = e.target.value;
+        usernameField.classList.remove("is-invalid");
+        feedbackArea.style.display = "none";
+        usernameSuccessOutput.textContent = `Checking for '${usernameVal}'...`
+
+
+        if (usernameVal.length > 0) {
+            usernameSuccessOutput.style.display = "block";
+            fetch("/authenticate/validate-username/", {
+                body: JSON.stringify({ username: usernameVal }),
+                method: "POST",
+            }).then((res) => res.json()).then((data) => {
+                // console.log("data",data);
+                usernameSuccessOutput.style.display = "none";
+                if (data.username_error) {
+                    usernameField.classList.add("is-invalid");
+                    feedbackArea.style.display = "block";
+                    feedbackArea.innerHTML = `<p> ${data.username_error} </p>`;
+                }
+            });
+        }
+        // console.log("username:", usernameVal);
+    })
+</script>
 {% endblock content %}
