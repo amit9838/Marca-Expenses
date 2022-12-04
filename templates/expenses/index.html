@@ -145,19 +145,16 @@
     </div>
 </div>  
 
-{% comment %} <input type="hidden" id="myVar" name="variable" value="{{ currency }}" hidden>  {% endcomment %}
+<input type="hidden" id="myVar" name="variable" value="{{ currency }}" hidden>
 {{ currency|json_script:"myVar" }}
 
 
 
 
 
-<script>
-    {% comment %} console.log("{{currency}}") {% endcomment %}
-</script>
-<script src="{% static 'js/searchExpenses.js' %}"></script>
-<script src="{% static 'js/expenses.js' %}"> </script>
-{% comment %} <script src="{% static 'js/chartjs.min.js' %}"> </script> {% endcomment %}
+
+<script src="{% static 'expenses/js/searchExpenses.js' %}"></script>
+<script src="{% static 'expenses/js/expenses.js' %}"> </script>
 
 
 {% endblock content %}
